@@ -1,166 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DaVinci Canvas - The Art Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --purple-1: #4a287e;
-            --purple-2: #2a106e;
-            --purple-3: #6e107f;
-            --purple-button-start: #7c3aed;
-            --purple-button-end: #a855f7;
-            --indigo-button-start: #4f46e5;
-            --indigo-button-end: #6366f1;
-            --teal-button-start: #14b8a6;
-            --teal-button-end: #2dd4bf;
+      :root {
+        --purple-1: #4a287e;
+        --purple-2: #2a106e;
+        --purple-3: #6e107f;
+        --purple-button-start: #7c3aed;
+        --purple-button-end: #a855f7;
+        --indigo-button-start: #4f46e5;
+        --indigo-button-end: #6366f1;
+        --teal-button-start: #14b8a6;
+        --teal-button-end: #2dd4bf;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #0c081d;
+        background: linear-gradient(-45deg, #100b21, #0c081d, #1a0f3d, #2d165c);
+        background-size: 400% 400%;
+        animation: gradient-animation 15s ease infinite;
+        position: relative;
+      }
+      @keyframes gradient-animation {
+        0% {
+          background-position: 0% 50%;
         }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0c081d;
-            background: linear-gradient(-45deg, #100b21, #0c081d, #1a0f3d, #2d165c);
-            background-size: 400% 400%;
-            animation: gradient-animation 15s ease infinite;
-            position: relative;
+        50% {
+          background-position: 100% 50%;
         }
-        @keyframes gradient-animation {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
+        100% {
+          background-position: 0% 50%;
         }
-        
-        .container {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            z-index: 10;
-        }
-        .card {
-            background-color: rgba(30, 41, 59, 0.6);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            z-index: 20;
-        }
-        .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid #fff;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        #generateBtn {
-            background-image: linear-gradient(to right, var(--purple-button-start), var(--purple-button-end));
-        }
-        #generateBtn:hover {
-            box-shadow: 0 0 15px var(--purple-button-end);
-        }
+      }
 
-        #uploadBtn {
-            background-image: linear-gradient(to right, var(--indigo-button-start), var(--indigo-button-end));
+      .container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 10;
+      }
+      .card {
+        background-color: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        z-index: 20;
+      }
+      .loading-spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid #fff;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
-        #uploadBtn:hover {
-            box-shadow: 0 0 15px var(--indigo-button-end);
+        100% {
+          transform: rotate(360deg);
         }
+      }
 
-        #downloadBtn {
-            background-image: linear-gradient(to right, var(--teal-button-start), var(--teal-button-end));
-        }
-        #downloadBtn:hover {
-            box-shadow: 0 0 15px var(--teal-button-end);
-        }
+      #generateBtn {
+        background-image: linear-gradient(
+          to right,
+          var(--purple-button-start),
+          var(--purple-button-end)
+        );
+      }
+      #generateBtn:hover {
+        box-shadow: 0 0 15px var(--purple-button-end);
+      }
 
-        .style-item {
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-            border: 2px solid transparent;
-        }
-        .style-item:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-        }
-        .style-item.selected {
-            border-color: #a855f7;
-            box-shadow: 0 0 15px #a855f7;
-            transform: scale(1.1);
-        }
+      #uploadBtn {
+        background-image: linear-gradient(
+          to right,
+          var(--indigo-button-start),
+          var(--indigo-button-end)
+        );
+      }
+      #uploadBtn:hover {
+        box-shadow: 0 0 15px var(--indigo-button-end);
+      }
 
-        .drop-zone {
-            border: 2px dashed rgba(255, 255, 255, 0.5);
-            transition: all 0.2s ease-in-out;
-        }
+      #downloadBtn {
+        background-image: linear-gradient(
+          to right,
+          var(--teal-button-start),
+          var(--teal-button-end)
+        );
+      }
+      #downloadBtn:hover {
+        box-shadow: 0 0 15px var(--teal-button-end);
+      }
 
-        .drop-zone.dragover {
-            border-color: #a855f7;
-            background-color: rgba(168, 85, 247, 0.1);
-        }
+      .style-item {
+        cursor: pointer;
+        transition: all 0.3s ease-in-out;
+        border: 2px solid transparent;
+      }
+      .style-item:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      }
+      .style-item.selected {
+        border-color: #a855f7;
+        box-shadow: 0 0 15px #a855f7;
+        transform: scale(1.1);
+      }
+
+      .drop-zone {
+        border: 2px dashed rgba(255, 255, 255, 0.5);
+        transition: all 0.2s ease-in-out;
+      }
+
+      .drop-zone.dragover {
+        border-color: #a855f7;
+        background-color: rgba(168, 85, 247, 0.1);
+      }
     </style>
-</head>
-<body class="text-gray-100">
+  </head>
+  <body class="text-gray-100">
     <div class="container p-4">
-        <div class="card w-full max-w-2xl mx-auto rounded-xl p-8 space-y-6">
-            <div class="text-center space-y-2">
-                <h1 class="text-4xl font-extrabold text-white">DaVinci Canvas</h1>
-                <h2 class="text-2xl font-bold text-gray-300">AI FOR ALL</h2>
-                <p class="text-gray-400">Unleash your creativity and transform your ideas into stunning images with the power of artificial intelligence.</p>
-            </div>
-            
-            <!-- Choose Style Section -->
-            <div class="space-y-4">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-gray-200 font-bold">Choose Style</h3>
-                    <span class="text-sm text-gray-400">Refine your output with a style.</span>
-                </div>
-                <div id="styleContainer" class="flex justify-start space-x-4 overflow-x-auto py-2 px-1">
-                    <!-- Style buttons will be injected here by JavaScript -->
-                </div>
-            </div>
-
-            <div class="flex flex-col space-y-4">
-                <label for="prompt" class="text-gray-200 font-medium">Enter your prompt:</label>
-                <textarea id="prompt" rows="4" class="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
-                <div id="dropZone" class="drop-zone flex items-center justify-center p-6 text-center rounded-lg cursor-pointer">
-                    <p class="text-gray-400">Drag and drop an image here, or <span id="uploadLink" class="text-indigo-400 font-bold">click to upload</span></p>
-                </div>
-                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-                    <button id="generateBtn" class="button-glow w-full text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300">Generate/Edit Image</button>
-                    <button id="downloadBtn" class="button-glow w-full text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 hidden">Download Image</button>
-                </div>
-                <input type="file" id="imageUpload" class="hidden" accept="image/*" />
-            </div>
-            <div id="uploadedImagePreview" class="flex items-center space-x-2 hidden">
-                <img id="uploadThumbnail" class="w-12 h-12 rounded-lg object-cover" />
-                <span id="uploadFileName" class="text-gray-400 text-sm"></span>
-            </div>
-            <div id="imageContainer" class="mt-6 flex flex-col items-center justify-center space-y-4">
-                <!-- Image or loading indicator will be inserted here -->
-            </div>
-            <div id="messageBox" class="mt-4 p-4 text-center rounded-lg hidden"></div>
+      <div class="card w-full max-w-2xl mx-auto rounded-xl p-8 space-y-6">
+        <div class="text-center space-y-2">
+          <h1 class="text-4xl font-extrabold text-white">DaVinci Canvas</h1>
+          <h2 class="text-2xl font-bold text-gray-300">AI FOR ALL</h2>
+          <p class="text-gray-400">
+            Unleash your creativity and transform your ideas into stunning
+            images with the power of artificial intelligence.
+          </p>
         </div>
+
+        <!-- Choose Style Section -->
+        <div class="space-y-4">
+          <div class="flex justify-between items-center">
+            <h3 class="text-gray-200 font-bold">Choose Style</h3>
+            <span class="text-sm text-gray-400"
+              >Refine your output with a style.</span
+            >
+          </div>
+          <div
+            id="styleContainer"
+            class="flex justify-start space-x-4 overflow-x-auto py-2 px-1"
+          >
+            <!-- Style buttons will be injected here by JavaScript -->
+          </div>
+        </div>
+
+        <div class="flex flex-col space-y-4">
+          <label for="prompt" class="text-gray-200 font-medium"
+            >Enter your prompt:</label
+          >
+          <textarea
+            id="prompt"
+            rows="4"
+            class="w-full p-3 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          ></textarea>
+          <div
+            id="dropZone"
+            class="drop-zone flex items-center justify-center p-6 text-center rounded-lg cursor-pointer"
+          >
+            <p class="text-gray-400">
+              Drag and drop an image here, or
+              <span id="uploadLink" class="text-indigo-400 font-bold"
+                >click to upload</span
+              >
+            </p>
+          </div>
+          <div
+            class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4"
+          >
+            <button
+              id="generateBtn"
+              class="button-glow w-full text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300"
+            >
+              Generate/Edit Image
+            </button>
+            <button
+              id="downloadBtn"
+              class="button-glow w-full text-white font-bold py-3 px-6 rounded-lg transition-colors duration-300 hidden"
+            >
+              Download Image
+            </button>
+          </div>
+          <input type="file" id="imageUpload" class="hidden" accept="image/*" />
+        </div>
+        <div
+          id="uploadedImagePreview"
+          class="flex items-center space-x-2 hidden"
+        >
+          <img id="uploadThumbnail" class="w-12 h-12 rounded-lg object-cover" />
+          <span id="uploadFileName" class="text-gray-400 text-sm"></span>
+        </div>
+        <div
+          id="imageContainer"
+          class="mt-6 flex flex-col items-center justify-center space-y-4"
+        >
+          <!-- Image or loading indicator will be inserted here -->
+        </div>
+        <div
+          id="messageBox"
+          class="mt-4 p-4 text-center rounded-lg hidden"
+        ></div>
+      </div>
     </div>
 
-    <script>
+    <!-- <script>
         document.addEventListener('DOMContentLoaded', () => {
             const promptTextarea = document.getElementById('prompt');
             const generateBtn = document.getElementById('generateBtn');
@@ -178,11 +240,13 @@
             // NOTE: The API key is provided by the user and is used here.
             // In a real-world application, you would handle this server-side
             // to keep the key secure.
-            const API_KEY = "AIzaSyB5yBnioB_uh9m4Fv0So6d21L1W5tZnUa8";
+
 
             // The API endpoint for the gemini-2.5-flash-image-preview model.
-            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${API_KEY}`;
+            // const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image-preview:generateContent?key=${API_KEY}`;
             
+
+            const API_URL= "/api/generate-image"
             let uploadedImageBase64 = null;
             let uploadedImageMimeType = null;
             let selectedPrePrompt = '';
@@ -421,6 +485,313 @@
                 }
             });
         });
+    </script> -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const promptTextarea = document.getElementById("prompt");
+        const generateBtn = document.getElementById("generateBtn");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const imageUpload = document.getElementById("imageUpload");
+        const imageContainer = document.getElementById("imageContainer");
+        const messageBox = document.getElementById("messageBox");
+        const uploadedImagePreview = document.getElementById(
+          "uploadedImagePreview"
+        );
+        const uploadThumbnail = document.getElementById("uploadThumbnail");
+        const uploadFileName = document.getElementById("uploadFileName");
+        const styleContainer = document.getElementById("styleContainer");
+        const dropZone = document.getElementById("dropZone");
+        const uploadLink = document.getElementById("uploadLink");
+
+        // ⬇️ Point this to your Render API
+        // same-origin:
+        // const API_URL = "/api/generate-image";
+        // cross-origin (example):
+        const API_URL = "/api/generate-image";
+
+        let uploadedImageBase64 = null; // data URL string (e.g., "data:image/png;base64,...")
+        let uploadedImageMimeType = null; // e.g., "image/png"
+        let selectedPrePrompt = "";
+
+        const styles = [
+          {
+            name: "Figurine",
+            imageUrl:
+              "https://placehold.co/100x100/7F00FF/FFFFFF?text=Figurine",
+            prePrompt:
+              "A collectible action figure with an acrylic base and toy-style packaging, inspired by the subject. Realistic style and setting. The figure is on a computer desk, and the screen shows the Blender or ZBrush modeling process. Next to the monitor, there is a toy packaging box in a classic style.",
+          },
+          {
+            name: "Capsule Diorama",
+            imageUrl: "https://placehold.co/100x100/40E0D0/FFFFFF?text=Diorama",
+            prePrompt:
+              "Tiny worlds in transparent capsules, featuring a miniature figure in a themed scene.",
+          },
+          {
+            name: "Barbie Box",
+            imageUrl: "https://placehold.co/100x100/FF69B4/FFFFFF?text=Barbie",
+            prePrompt:
+              "A character transformed into a Barbie-style doll inside retro packaging.",
+          },
+          {
+            name: "Funko Pop",
+            imageUrl: "https://placehold.co/100x100/FF4500/FFFFFF?text=Funko",
+            prePrompt:
+              "A cartoonish, oversized-head figurine inspired by the subject.",
+          },
+          {
+            name: "Action Figure",
+            imageUrl: "https://placehold.co/100x100/8A2BE2/FFFFFF?text=Action",
+            prePrompt: "A hyper-detailed 1/7 scale toy replica of a character.",
+          },
+          {
+            name: "Desk Display",
+            imageUrl: "https://placehold.co/100x100/008080/FFFFFF?text=Desk",
+            prePrompt:
+              "Figurines posed on desks alongside 3D modeling screens and toy boxes.",
+          },
+          {
+            name: "AI Stylized",
+            imageUrl:
+              "https://placehold.co/100x100/808000/FFFFFF?text=Stylized",
+            prePrompt:
+              "Custom stylizations (cosplay, superhero, anime, or fantasy themes) made share-ready for TikTok/Instagram.",
+          },
+          {
+            name: "Photographic",
+            imageUrl: "https://placehold.co/100x100/6366f1/FFFFFF?text=Photo",
+            prePrompt: "A photorealistic, detailed photo.",
+          },
+          {
+            name: "Anime",
+            imageUrl: "https://placehold.co/100x100/ec4899/FFFFFF?text=Anime",
+            prePrompt: "A vivid, colorful anime illustration.",
+          },
+          {
+            name: "3D Render",
+            imageUrl: "https://placehold.co/100x100/f59e0b/FFFFFF?text=3D",
+            prePrompt: "A smooth, highly detailed 3D render.",
+          },
+          {
+            name: "Painting",
+            imageUrl: "https://placehold.co/100x100/8b5cf6/FFFFFF?text=Paint",
+            prePrompt: "A beautiful painting with an artistic feel.",
+          },
+          {
+            name: "Cyberpunk",
+            imageUrl: "https://placehold.co/100x100/0ea5e9/FFFFFF?text=Cyber",
+            prePrompt: "A neon-drenched cyberpunk scene with vibrant colors.",
+          },
+          {
+            name: "Fantasy",
+            imageUrl: "https://placehold.co/100x100/10b981/FFFFFF?text=Fantasy",
+            prePrompt: "An epic fantasy landscape with magical elements.",
+          },
+        ];
+
+        // Build style chips
+        styles.forEach((style) => {
+          const styleItem = document.createElement("div");
+          styleItem.className =
+            "style-item flex-shrink-0 flex flex-col items-center space-y-2";
+          styleItem.innerHTML = `
+        <img src="${style.imageUrl}" alt="${style.name}" class="w-16 h-16 rounded-full object-cover border-2 border-transparent transition-all duration-300" />
+        <span class="text-sm text-gray-400 text-center">${style.name}</span>
+      `;
+          styleItem.dataset.prePrompt = style.prePrompt;
+          styleContainer.appendChild(styleItem);
+        });
+
+        const showMessage = (text, type = "info") => {
+          messageBox.textContent = text;
+          messageBox.classList.remove(
+            "hidden",
+            "bg-red-500",
+            "bg-green-500",
+            "bg-blue-500"
+          );
+          if (type === "error") {
+            messageBox.classList.add("bg-red-500", "text-white");
+          } else if (type === "success") {
+            messageBox.classList.add("bg-green-500", "text-white");
+          } else {
+            messageBox.classList.add("bg-blue-500", "text-white");
+          }
+        };
+
+        // === MAIN: call your backend API instead of Google ===
+        const generateImage = async () => {
+          const prompt = promptTextarea.value.trim();
+
+          if (!prompt && !uploadedImageBase64) {
+            showMessage("Please enter a prompt or upload an image.", "error");
+            return;
+          }
+
+          imageContainer.innerHTML = `
+        <div class="loading-spinner"></div>
+        <p class="mt-2 text-gray-400">Generating image...</p>
+      `;
+          messageBox.classList.add("hidden");
+          downloadBtn.classList.add("hidden");
+          generateBtn.disabled = true;
+
+          try {
+            // Send YOUR server contract (simple & stable)
+            const bodyForBackend = {
+              prompt: prompt || null,
+              stylePrompt: selectedPrePrompt || null,
+              image: uploadedImageBase64
+                ? { dataUrl: uploadedImageBase64 }
+                : null,
+            };
+
+            let response = null;
+            let success = false;
+            let retries = 0;
+            const maxRetries = 1;
+            const baseDelay = 1000;
+
+            while (retries < maxRetries && !success) {
+              try {
+                response = await fetch(API_URL, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(bodyForBackend)
+                });
+
+                if (response.ok) {
+                  success = true;
+                } else if (response.status === 429) {
+                  // Rate limited by your server — backoff
+                  await new Promise(r => setTimeout(r, baseDelay * Math.pow(2, retries)));
+                  retries++;
+                } else {
+                  const errJson = await response.json().catch(() => ({}));
+                  const msg = errJson?.error || `Server error (${response.status})`;
+                  throw new Error(msg);
+                }
+              } catch (err) {
+                if (retries < maxRetries - 1) {
+                  await new Promise(r => setTimeout(r, baseDelay * Math.pow(2, retries)));
+                  retries++;
+                } else {
+                  throw err;
+                }
+              }
+            }
+
+            if (!success || !response) {
+              throw new Error('Failed to fetch after multiple retries.');
+            }
+
+       
+
+            const result = await response.json();
+
+            // Expecting: { mimeType: "image/png", imageBase64: "..." , text?: "..." }
+            if (result?.mimeType && result?.imageBase64) {
+              const imageUrl = `data:${result.mimeType};base64,${result.imageBase64}`;
+              imageContainer.innerHTML = `<img src="${imageUrl}" alt="Generated Image" class="rounded-lg max-w-full h-auto shadow-xl" />`;
+              showMessage("Image generated successfully!", "success");
+              downloadBtn.classList.remove("hidden");
+            } else {
+              const serverMsg = result?.error || "No image in response.";
+              throw new Error(serverMsg);
+            }
+          } catch (error) {
+            console.error("Error generating image:", error);
+            imageContainer.innerHTML = "";
+            showMessage(`Error: ${error.message}`, "error");
+          } finally {
+            generateBtn.disabled = false;
+          }
+        };
+
+        generateBtn.addEventListener("click", generateImage);
+
+        promptTextarea.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" && !event.shiftKey) {
+            event.preventDefault();
+            generateImage();
+          }
+        });
+
+        styleContainer.addEventListener("click", (event) => {
+          const styleItem = event.target.closest(".style-item");
+          if (styleItem) {
+            document.querySelectorAll(".style-item").forEach((item) => {
+              item.classList.remove("selected");
+              item.querySelector("img").classList.remove("border-purple-600");
+              item.querySelector("img").classList.add("border-transparent");
+            });
+
+            styleItem.classList.add("selected");
+            styleItem.querySelector("img").classList.add("border-purple-600");
+            styleItem
+              .querySelector("img")
+              .classList.remove("border-transparent");
+            selectedPrePrompt = styleItem.dataset.prePrompt;
+          }
+        });
+
+        imageUpload.addEventListener("change", (event) => {
+          const file = event.target.files[0];
+          handleFile(file);
+        });
+
+        dropZone.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          dropZone.classList.add("dragover");
+        });
+        dropZone.addEventListener("dragleave", (e) => {
+          e.preventDefault();
+          dropZone.classList.remove("dragover");
+        });
+        dropZone.addEventListener("drop", (e) => {
+          e.preventDefault();
+          dropZone.classList.remove("dragover");
+          const file = e.dataTransfer.files[0];
+          handleFile(file);
+        });
+        uploadLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          imageUpload.click();
+        });
+
+        function handleFile(file) {
+          if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              uploadedImageBase64 = e.target.result; // full data URL
+              uploadedImageMimeType = file.type;
+              uploadThumbnail.src = uploadedImageBase64;
+              uploadFileName.textContent = file.name;
+              uploadedImagePreview.classList.remove("hidden");
+              showMessage(
+                `Image "${file.name}" uploaded. Now enter a prompt to edit it.`,
+                "info"
+              );
+            };
+            reader.readAsDataURL(file);
+          } else {
+            showMessage("Please upload a valid image file.", "error");
+          }
+        }
+
+        downloadBtn.addEventListener("click", () => {
+          const image = imageContainer.querySelector("img");
+          if (image) {
+            const link = document.createElement("a");
+            link.href = image.src;
+            link.download = "generated_image.png";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        });
+      });
     </script>
-</body>
+  </body>
 </html>
